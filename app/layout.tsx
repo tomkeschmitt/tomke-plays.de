@@ -15,7 +15,8 @@ export default function RootLayout({
     <html lang="de">
       <body className="antialiased">
         <SessionProvider>
-          <PayPalScriptProvider options={{ "client-id": "AVFtFUmNYXK0T0_9DHxswaiUzIEOvDr2ZljdUCwTxIK7aJ6DVxuYrimkZ92old5eQCD9-n5NjD2fdXOv" }}>
+          <PayPalScriptProvider options={{ clientId: "AVFtFUmNYXK0T0_9DHxswaiUzIEOvDr2ZljdUCwTxIK7aJ6DVxuYrimkZ92old5eQCD9-n5NjD2fdXOv" }}>
+
 
             {/* Dieser Container erzwingt, dass der Footer unten landet */}
             <div className="flex flex-col min-h-screen">
