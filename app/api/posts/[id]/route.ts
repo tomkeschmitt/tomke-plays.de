@@ -13,8 +13,7 @@ export async function GET(req: Request, { params }: paramsType) {
         user: {
           select: {
             id: true,
-            name: true,
-            image: true
+            name: true
           }
         }
       }
