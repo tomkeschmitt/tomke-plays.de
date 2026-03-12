@@ -2,12 +2,16 @@
 const nextConfig = {
   reactStrictMode: true,
 
-  experimental: {
-    appDir: true,
-  },
+  // 'experimental.appDir' wurde entfernt, da es jetzt Standard ist.
 
   images: {
-    domains: ["example.com"],
+    // 'domains' ist veraltet, 'remotePatterns' ist sicherer und moderner
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'example.com',
+      },
+    ],
   },
 
   webpack(config) {
