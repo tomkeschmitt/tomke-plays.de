@@ -3,6 +3,7 @@
 import { SessionProvider } from "next-auth/react";
 import Nav from "@/components/Nav";
 import "./globals.css";
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 
 export default function RootLayout({
   children,
@@ -13,8 +14,10 @@ export default function RootLayout({
     <html lang="de">
       <body>
         <SessionProvider>
-          <Nav />       {/* useSession in Nav funktioniert jetzt */}
-          {children}    {/* der Seiteninhalt, z. B. Home oder Links */}
+          <PayPalScriptProvider options={{ "client-id": "AVFtFUmNYXK0T0_9DHxswaiUzIEOvDr2ZljdUCwTxIK7aJ6DVxuYrimkZ92old5eQCD9-n5NjD2fdXOv" }}>
+            <Nav />       {/* Navbar oben */}
+            {children}    {/* Seiteninhalt: Home, Links, Shop */}
+          </PayPalScriptProvider>
         </SessionProvider>
       </body>
     </html>
