@@ -8,62 +8,75 @@ import Logo from "@/public/Logo.png";
 export default function Nav() {
   const { status, data: session } = useSession();
 
-  // Admin-ID aus altem Code
   const ADMIN_ID = "cmmj98qgi0000rq24gmwmx125";
   const isAdmin = session?.user?.id === ADMIN_ID;
 
   return (
-    <nav className="sticky top-0 z-50 bg-white shadow px-6 py-3">
-      <div className="flex items-center max-w-7xl mx-auto w-full">
+    <nav className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm px-6 py-3">
+      <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
 
-        {/* LINKS */}
-        <div className="flex items-center gap-2">
+        {/* LINKER BLOCK (Logo) */}
+        <div className="flex items-center gap-2 shrink-0">
           <Image src={Logo} alt="Logo" width={32} height={32} />
           <span className="text-2xl font-bold">TomkePlays.de</span>
         </div>
 
-        {/* "LEERZEICHEN" zwischen Links und Mitte */}
-        {"------------------------------"}
-
         {/* MITTE */}
-        <div className="flex-1 flex justify-center text-lg">
-          <Link href="/">Home</Link>{"--------"}
-          <Link href="/shop">Shop</Link>{"--------"}
-          <Link href="/links">Links</Link>{"--------"}
-          {isAdmin && <Link href="/admin-tools">Admin Tools</Link>}
+        <div className="hidden md:flex items-center justify-center text-lg font-bold mx-auto">
+          <Link href="/" className="text-slate-900 hover:text-blue-600 transition">
+            Home
+          </Link>
+
+          <span className="text-slate-300 font-light mx-10">-|-</span>
+
+          <Link href="/shop" className="text-slate-900 hover:text-blue-600 transition">
+            Shop
+          </Link>
+
+          <span className="text-slate-300 font-light mx-10">-|-</span>
+
+          <Link href="/links" className="text-slate-900 hover:text-blue-600 transition">
+            Links
+          </Link>
+
+          {isAdmin && (
+            <>
+              <span className="text-slate-300 font-light mx-10">-|-</span>
+              <Link href="/admin-tools" className="text-slate-900 hover:text-blue-600 transition-all">
+                Admin Tools
+              </Link>
+            </>
+          )}
         </div>
 
-        {/* "LEERZEICHEN" zwischen Mitte und Rechts */}
-        {"------------------------------"}
 
-        {/* RECHTS */}
-        <div className="flex items-center gap-3">
+
+        {/* RECHTER BLOCK (User) */}
+        <div className="flex items-center gap-4 shrink-0">
           {status === "authenticated" ? (
             <>
-              <span>{session.user?.name}</span>{"------"}
+              <span className="hidden sm:inline font-medium text-slate-700">
+                {session.user?.name}
+              </span>
               <button
                 onClick={() => signOut()}
-                className="px-3 py-1 bg-slate-900 text-white rounded-md"
+                className="px-4 py-2 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition"
               >
                 Sign out
               </button>
             </>
           ) : (
-            <>
+            <div className="flex items-center gap-2">
+              <Link href="/login" className="px-4 py-2 text-slate-700 font-medium hover:text-black">
+                Log in
+              </Link>
               <Link
                 href="/signup"
-                className="px-3 py-1 bg-slate-900 text-white rounded-md"
+                className="px-4 py-2 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition"
               >
                 Sign up
               </Link>
-              {"--------"}
-              <Link
-                href="/login"
-                className="px-3 py-1 bg-slate-900 text-white rounded-md"
-              >
-                Log in
-              </Link>
-            </>
+            </div>
           )}
         </div>
       </div>
