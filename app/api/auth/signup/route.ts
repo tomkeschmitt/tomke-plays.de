@@ -1,24 +1,48 @@
-import { NextResponse } from 'next/server';
-import { genSalt, hash } from 'bcryptjs';
-import prisma from '@/prisma/client';
+import { NextResponse } from "next/server";
+import { genSalt, hash } from "bcryptjs";
+import prisma from "@/prisma/client";
 
-export async function Post(req: Request) {
+export async function POST(req: Request) {
   try {
-    const { name, email, password } = await req.json()
+    const { name, display, email, password, avatar } = await req.json();
 
-    const isUserExisting = await prisma.user.findFirst({ where: { email } })
-    if (isUserExisting) return new NextResponse("User Already Exists...!", { status: 422 })
+    if (!email || !password) {
+      return NextResponse.json(
+        { error: "Email and password are required" },
+        { status: 400 }
+      );
+    }
 
-    const salt = await genSalt(10)
-    const hashed = await hash(password, salt)
+    // Prüfen, ob User existiert
+    const existingUser = await prisma.user.findUnique({
+      where: { email },
+    });
+    if (existingUser) {
+      return NextResponse.json(
+        { error: "User already exists" },
+        { status: 422 }
+      );
+    }
 
-    await prisma.user.create({
-      data: { name, email, password: hashed }
-    })
+    // Passwort hashen
+    const salt = await genSalt(10);
+    const hashedPassword = await hash(password, salt);
 
-    return NextResponse.json({ message: "User created successful" })
+    // User erstellen
+    const user = await prisma.user.create({
+      data: {
+        name,
+        display,
+        email,
+        password: hashedPassword,
+        avatar,
+        friends: [],
+      },
+    });
 
-  } catch (error) {
-    return new NextResponse("Something went wrong", { status: 500 })
+    return NextResponse.json({ message: "User created successfully", user });
+  } catch (error: any) {
+    console.error(error);
+    return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
 }

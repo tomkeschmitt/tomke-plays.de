@@ -1,59 +1,21 @@
 "use client";
 
-import { useSession, signOut } from "next-auth/react";
-import Link from "next/link";
+import Nav from "@/components/Nav";
 
-function Nav() {
-  const { status } = useSession()
-
+export default function Home() {
   return (
-    <nav className="df gap-4 px-6 py-2 shadow sticky top-0 z-1 bg-white">
-      <Link href="/" className="mr-auto text-2xl font-medium">
-        Post-It
-      </Link>
+    <>
+      <Nav />
 
-      {
-        status !== "loading" && (
-          status === "unauthenticated" ? <>
-            <Link
-              href="/signup"
-              className="text-sm font-medium hover:text-blue-600"
-            >
-              Sign up
-            </Link>
+      <main className="p-6">
+        <h1 className="text-3xl font-bold mb-4">
+          Willkommen auf TomkePlays.de
+        </h1>
 
-            <Link
-              href="/login"
-              className="px-4 py-1 text-sm bg-slate-900 text-white hover:bg-slate-700 transition-colors rounded-md"
-            >
-              Log in
-            </Link>
-          </>
-            :
-            <>
-              <Link
-                href="/my-posts"
-                className="text-sm font-medium hover:text-blue-600"
-              >
-                My Posts
-              </Link>
-              <Link
-                href="/create-post"
-                className="text-sm font-medium hover:text-blue-600"
-              >
-                Create Post
-              </Link>
-              <button
-                className="text-sm bg-slate-900 text-white hover:bg-slate-700 transition-colors"
-                onClick={() => signOut()}
-              >
-                Sign out
-              </button>
-            </>
-        )
-      }
-    </nav>
-  )
+        <p>
+          Das ist die Startseite deiner Website.
+        </p>
+      </main>
+    </>
+  );
 }
-
-export default Nav

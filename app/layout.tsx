@@ -1,26 +1,22 @@
-// global styles
-import 'react-toastify/dist/ReactToastify.css';
-import './globals.css';
+"use client";
 
-import ClientWrapper from "@/comp/Common/ClientWrapper";
-import Nav from '@/comp/Nav';
+import { SessionProvider } from "next-auth/react";
+import Nav from "@/components/Nav";
+import "./globals.css";
 
-type props = {
-  children: React.ReactNode
-}
-
-async function RootLayout({ children }: props) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <html lang="en">
-      <head />
+    <html lang="de">
       <body>
-        <ClientWrapper>
-          <Nav />
-          {children}
-        </ClientWrapper>
+        <SessionProvider>
+          <Nav />       {/* useSession in Nav funktioniert jetzt */}
+          {children}    {/* der Seiteninhalt, z. B. Home oder Links */}
+        </SessionProvider>
       </body>
     </html>
-  )
+  );
 }
-
-export default RootLayout

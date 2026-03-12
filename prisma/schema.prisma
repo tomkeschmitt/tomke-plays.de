@@ -8,6 +8,28 @@ datasource db {
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
+// -----------------------
+// User / Auth / Social
+// -----------------------
+model User {
+  id            String    @id @default(cuid())
+  name          String?   // echter Name
+  display       String?   // Anzeigename
+  email         String?   @unique
+  password      String?
+  avatar        String?   // Profilbild URL
+  createdAt     DateTime  @default(now())
+  friends       String[]  // Liste der IDs der Freunde
+
+  posts         Post[]
+  comments      Comment[]
+  accounts      Account[]
+  sessions      Session[]
+}
+
+// -----------------------
+// Posts
+// -----------------------
 model Post {
   id          String    @id @default(cuid())
   createdAt   DateTime  @default(now())
@@ -15,21 +37,30 @@ model Post {
   title       String    @db.VarChar(255)
   description String
   published   Boolean   @default(false)
+
   userId      String
   user        User      @relation(fields: [userId], references: [id])
-  Comment     Comment[]
+  comments    Comment[]
 }
 
+// -----------------------
+// Comments
+// -----------------------
 model Comment {
   id        String   @id @default(cuid())
   message   String
-  postId    String
-  userId    String
   createdAt DateTime @default(now())
+
+  postId    String
   post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+// -----------------------
+// NextAuth Account
+// -----------------------
 model Account {
   id                String  @id @default(cuid())
   userId            String
@@ -49,27 +80,21 @@ model Account {
   @@unique([provider, providerAccountId])
 }
 
+// -----------------------
+// NextAuth Session
+// -----------------------
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
   userId       String
   expires      DateTime
+
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  password      String?
-  accounts      Account[]
-  sessions      Session[]
-  Post          Post[]
-  Comment       Comment[]
-}
-
+// -----------------------
+// VerificationToken (NextAuth)
+// -----------------------
 model VerificationToken {
   identifier String
   token      String   @unique
