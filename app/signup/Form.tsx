@@ -4,131 +4,124 @@ import { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
-
-import EyeClose from '@/svg/common/eye-close.svg';
-import EyeOpen from '@/svg/common/eye-open.svg';
+import { Eye, EyeOff, User, Mail, Lock } from 'lucide-react'; // Premium Icons
 
 type dataType = { name: string, email: string, password: string }
 
 function Form() {
-  const { register, formState: { errors }, handleSubmit } = useForm({
-    defaultValues: {
-      name: "",
-      email: "",
-      password: "",
-    },
-  })
-  const [showPass, setShowPass] = useState(false)
-  const router = useRouter()
+  const { register, formState: { errors }, handleSubmit } = useForm<dataType>({
+    defaultValues: { name: "", email: "", password: "" },
+  });
 
-  const updateShowPass = (e: React.FormEvent<HTMLButtonElement>) => {
-    e.preventDefault()
-    setShowPass(p => !p)
-  }
+  const [showPass, setShowPass] = useState(false);
+  const [loading, setLoading] = useState(false); // Für Button-Animation
+  const router = useRouter();
 
   const onSubmit: SubmitHandler<dataType> = async data => {
+    setLoading(true);
     try {
-      await axios.post("/api/auth/signup", { ...data })
-      router.push('/login')
-
+      await axios.post("/api/auth/signup", { ...data });
+      router.push('/login');
     } catch (error) {
-      console.log(error)
+      console.log(error);
+      alert("Fehler beim Erstellen des Accounts.");
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="mb-4">
-        <label htmlFor="signup-name">Name</label>
-        <input
-          id="signup-name"
-          type="text"
-          placeholder="Enter your name"
-          {...register("name", {
-            required: "Name is required",
-            minLength: {
-              value: 3,
-              message: "Name should be atleast 3 characters"
-            }
-          })}
-        />
-
-        {
-          errors.name &&
-          <div className="mt-0.5 text-xs text-red-600">
-            {errors.name.message}
-          </div>
-        }
-      </div>
-
-      <div className="mb-4">
-        <label htmlFor="signup-email">Email</label>
-        <input
-          id="signup-email"
-          type="email"
-          placeholder="Enter your email"
-          {...register("email", {
-            required: "Email is required",
-            pattern: {
-              value: /^\S+@\S+$/i,
-              message: "Enter a valid email"
-            },
-          })}
-        />
-
-        {
-          errors.email &&
-          <div className="mt-0.5 text-xs text-red-600">
-            {errors.email.message}
-          </div>
-        }
-      </div>
-
-      <div className="mb-4">
-        <label htmlFor="signup-password">Password</label>
-        <div className='relative'>
-          <input
-            id="signup-password"
-            type={showPass ? "text" : "password"}
-            placeholder="Enter your password"
-            className='pr-9'
-            {...register("password", {
-              required: "Password is required",
-              pattern: {
-                value: /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/,
-                message: "Password must be strong"
-              }
-            })}
-          />
-          <button
-            onClick={updateShowPass}
-            className="px-0 absolute bottom-1 right-2"
-            type="button"
-          >
-            {
-              showPass
-                ? <EyeOpen className="w-5 h-5" />
-                : <EyeClose className="w-5 h-5" />
-            }
-          </button>
+    <div className="w-full max-w-md mx-auto">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="bg-white border border-slate-200 p-10 rounded-[2.5rem] shadow-2xl shadow-slate-200/50"
+      >
+        <div className="text-center mb-10">
+          <h2 className="text-3xl font-black text-slate-900 tracking-tighter">Join the Hub</h2>
+          <p className="text-slate-400 text-sm font-medium mt-2">Erstelle deinen TomkePlays Account</p>
         </div>
 
-        {
-          errors.password &&
-          <div className="mt-0.5 text-xs text-red-600">
-            {errors.password.message}
+        {/* NAME INPUT */}
+        <div className="mb-6">
+          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-4 mb-2 block">
+            Name
+          </label>
+          <div className="relative">
+            <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+            <input
+              type="text"
+              placeholder="Vorname Nachname"
+              className={`w-full pl-12 pr-4 py-4 bg-slate-50 border-none rounded-2xl text-sm font-medium focus:ring-2 focus:ring-blue-500 transition-all outline-none ${errors.name ? 'ring-2 ring-red-500' : ''}`}
+              {...register("name", {
+                required: "Name wird benötigt",
+                minLength: { value: 3, message: "Mindestens 3 Zeichen" }
+              })}
+            />
           </div>
-        }
-      </div>
+          {errors.name && <p className="mt-1.5 ml-4 text-[10px] font-bold text-red-500 uppercase tracking-wider">{errors.name.message}</p>}
+        </div>
 
-      <button
-        className="block mx-auto mb-6 px-12 bg-slate-900 text-white hover:bg-slate-700 transition-colors"
-        type='submit'
-      >
-        Sign up
-      </button>
-    </form>
-  )
+        {/* EMAIL INPUT */}
+        <div className="mb-6">
+          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-4 mb-2 block">
+            Email Addresse
+          </label>
+          <div className="relative">
+            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+            <input
+              type="email"
+              placeholder="deine@mail.de"
+              className={`w-full pl-12 pr-4 py-4 bg-slate-50 border-none rounded-2xl text-sm font-medium focus:ring-2 focus:ring-blue-500 transition-all outline-none ${errors.email ? 'ring-2 ring-red-500' : ''}`}
+              {...register("email", {
+                required: "Email wird benötigt",
+                pattern: { value: /^\S+@\S+$/i, message: "Ungültige Email" }
+              })}
+            />
+          </div>
+          {errors.email && <p className="mt-1.5 ml-4 text-[10px] font-bold text-red-500 uppercase tracking-wider">{errors.email.message}</p>}
+        </div>
+
+        {/* PASSWORD INPUT */}
+        <div className="mb-10">
+          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-4 mb-2 block">
+            Passwort
+          </label>
+          <div className="relative">
+            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+            <input
+              type={showPass ? "text" : "password"}
+              placeholder="Dein Passwort"
+              className={`w-full pl-12 pr-12 py-4 bg-slate-50 border-none rounded-2xl text-sm font-medium focus:ring-2 focus:ring-blue-500 transition-all outline-none ${errors.password ? 'ring-2 ring-red-500' : ''}`}
+              {...register("password", {
+                required: "Passwort benötigt",
+                pattern: {
+                  value: /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/,
+                  message: "Passwort ist zu schwach"
+                }
+              })}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPass(!showPass)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+            >
+              {showPass ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
+          </div>
+          {errors.password && <p className="mt-1.5 ml-4 text-[10px] font-bold text-red-500 uppercase tracking-wider">{errors.password.message}</p>}
+        </div>
+
+        {/* SUBMIT BUTTON */}
+        <button
+          disabled={loading}
+          className="w-full py-4 bg-slate-900 text-white rounded-2xl font-bold text-sm hover:bg-blue-600 hover:shadow-xl hover:shadow-blue-200 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+          type='submit'
+        >
+          {loading ? "Wird erstellt..." : "Account erstellen"}
+        </button>
+      </form>
+    </div>
+  );
 }
 
-export default Form
+export default Form;
