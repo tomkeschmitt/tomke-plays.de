@@ -17,10 +17,9 @@ export async function GET(req: Request, { params }: paramsType) {
       orderBy: { createdAt: "desc" },
       include: {
         user: {
-          select: {
-            name: true,
-            image: true
-          }
+            select: {
+              name: true
+            }
         }
       },
     })
