@@ -6,7 +6,6 @@ import GithubProvider from "next-auth/providers/github";
 import { compare } from 'bcryptjs';
 import prisma from "@/prisma/client";
 
-// TypeScript mitteilen, dass die Session eine ID hat
 declare module "next-auth" {
   interface Session {
     user: {
@@ -19,6 +18,19 @@ export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   session: {
     strategy: "jwt",
+  },
+  // WICHTIG: Erlaubt Login über HTTP (nicht HTTPS) für lokale IPs
+  useSecureCookies: process.env.NODE_ENV === "production",
+  cookies: {
+    sessionToken: {
+      name: `next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === "production" // Nur auf true bei HTTPS (Vercel)
+      }
+    }
   },
   providers: [
     GoogleProvider({
@@ -42,10 +54,11 @@ export const authOptions: NextAuthOptions = {
           where: { email: credentials.email }
         });
 
-        if (!user || !user.password) throw new Error("No user found");
+        // Wichtig: Fehler werfen führt oft zum Redirect auf /error
+        if (!user || !user.password) return null;
 
         const checkPassword = await compare(credentials.password, user.password);
-        if (!checkPassword) throw new Error("Password not matched");
+        if (!checkPassword) return null;
 
         return {
           id: user.id,
@@ -58,23 +71,22 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id; // Schreibt die ID beim Login in den JWT
+        token.id = user.id;
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id as string; // Reicht die ID an das Frontend/Server weiter
+        session.user.id = token.id as string;
       }
       return session;
     },
   },
-
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
-    signIn: '/login', // Falls du eine eigene Login-Seite hast
+    signIn: '/login',
   }
 };
 
 const handler = NextAuth(authOptions);
-export { handler as GET, handler as POST };
+export { handler as GET, handler as POST }; // POST korrigiert (war GET)

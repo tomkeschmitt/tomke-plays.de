@@ -1,6 +1,7 @@
+// postcss.config.js
 module.exports = {
   plugins: {
-    tailwindcss: {},
+    '@tailwindcss/postcss': {}, // Hier das @-Präfix hinzufügen
     autoprefixer: {},
   },
 }

@@ -1,13 +1,17 @@
+@import "tailwindcss";
+
+/* In Tailwind v4 werden Schriftarten direkt konfiguriert oder importiert */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Theme-Konfiguration für v4 (falls Variablen fehlen) */
+@theme {
+  --font-inter: "Inter", sans-serif;
+}
 
 @layer base {
   body {
     scroll-behavior: smooth;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-inter);
   }
 
   body ::-webkit-scrollbar {
@@ -36,17 +40,17 @@
 
   input,
   textarea {
-    @apply 
-      block w-full px-3 py-2 
-      text-sm text-gray-900 rounded 
+    @apply
+      block w-full px-3 py-2
+      text-sm text-gray-900 rounded
       border border-[#EBEBEB] focus:outline-none
       placeholder:text-[#999CA0]
     ;
   }
 
   select {
-    @apply 
-    w-full pl-3 pr-6 py-2 border appearance-none rounded
+    @apply
+      w-full pl-3 pr-6 py-2 border appearance-none rounded
       text-sm text-gray-900 bg-no-repeat border-[#EBEBEB]
       focus:outline-none
     ;
@@ -65,19 +69,12 @@
 }
 
 @layer components {
-  .df,
-  .dfc,
-  .dc {
-    @apply flex gap-2;
-  }
-
-  .df,
-  .dc {
-    @apply items-center;
+  .df, .dc {
+    @apply flex gap-2 items-center;
   }
 
   .dfc {
-    @apply flex-col;
+    @apply flex flex-col gap-2;
   }
 
   .dc {
@@ -102,28 +99,22 @@
     width: 5px;
   }
 
-
-  /* input number hide arrows - Chrome, Safari, Edge, Opera */
   .no-number-arrows::-webkit-outer-spin-button,
   .no-number-arrows::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
   }
 
-  /* input number hide arrows - Firefox */
   .no-number-arrows {
     -moz-appearance: textfield;
   }
 
-
-  /* Loader */
   .loader {
-    @apply 
-      w-10 h-10 border-4 animate-spin 
+    @apply
+      w-10 h-10 border-4 animate-spin
       border-gray-100 border-t-gray-800 rounded-full
     ;
-  } 
-  
+  }
 
   .or-dash::before,
   .or-dash::after {
@@ -140,16 +131,13 @@
   }
 }
 
-
 :root {
   --toastify-icon-color-success: #5DC90A;
-  --toastify-text-color-light: #6C6D6D;  
+  --toastify-text-color-light: #6C6D6D;
   --toastify-toast-min-height: 34px;
   --toastify-toast-width: 100vw;
 }
 
-
-/* Toastify Confiuration */
 .Toastify__toast {
   @apply w-fit px-1 py-2 rounded-full;
   margin: 0 auto .8rem;

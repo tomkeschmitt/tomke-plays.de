@@ -2,10 +2,10 @@
 const nextConfig = {
   reactStrictMode: true,
 
-  // 'experimental.appDir' wurde entfernt, da es jetzt Standard ist.
+  // Direkt auf oberster Ebene, nicht unter experimental
+  allowedDevOrigins: ['192.168.178.40'],
 
   images: {
-    // 'domains' ist veraltet, 'remotePatterns' ist sicherer und moderner
     remotePatterns: [
       {
         protocol: 'https',
@@ -26,7 +26,6 @@ const nextConfig = {
         },
       ],
     });
-
     return config;
   },
 };
