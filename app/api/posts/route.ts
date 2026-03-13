@@ -32,7 +32,10 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   try {
     const { title, description } = await req.json()
-    const userId = headers().get("userid") as string
+
+    // FIX für Next.js 16: headers() muss awaitet werden
+    const headerList = await headers();
+    const userId = headerList.get("userid") as string;
 
     const post = await prisma.post.create({
       data: {
