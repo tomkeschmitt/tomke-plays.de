@@ -2,7 +2,10 @@
 const nextConfig = {
   reactStrictMode: true,
 
-  // Direkt auf oberster Ebene, nicht unter experimental
+  // Behebt den Turbopack-Fehler auf Vercel
+  turbopack: {},
+
+  // Erlaubt Zugriff über lokale IP (nur für dev wichtig)
   allowedDevOrigins: ['192.168.178.40'],
 
   images: {
