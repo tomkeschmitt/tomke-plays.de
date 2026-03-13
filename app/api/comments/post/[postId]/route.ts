@@ -3,11 +3,14 @@ import prisma from '@/prisma/client';
 
 import { getQueries } from '../../../utils';
 
-type paramsType = { params: { postId: string } }
+// 1. Typ auf Promise ändern
+type paramsType = { params: Promise<{ postId: string }> }
 
 export async function GET(req: Request, { params }: paramsType) {
   const { skip, limit = 10 } = getQueries(req, ["limit", "skip"])
-  const { postId } = params
+
+  // 2. WICHTIG: Die postId erst awaiten!
+  const { postId } = await params
 
   try {
     const comments = await prisma.comment.findMany({
