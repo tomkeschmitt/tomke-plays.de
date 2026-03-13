@@ -1,9 +1,10 @@
-@import "tailwindcss";
-
-/* In Tailwind v4 werden Schriftarten direkt konfiguriert oder importiert */
+/* 1. Zuerst die externe Schriftart */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-/* Theme-Konfiguration für v4 (falls Variablen fehlen) */
+/* 2. Dann Tailwind v4 */
+@import "tailwindcss";
+
+/* 3. Dann die Theme-Konfiguration */
 @theme {
   --font-inter: "Inter", sans-serif;
 }
