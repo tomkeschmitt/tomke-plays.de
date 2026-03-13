@@ -1,41 +1,26 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/prisma/client';
 
-type paramsType = { params: { id: string } }
+// 1. Typ auf Promise ändern
+type paramsType = { params: Promise<{ id: string }> }
 
 export async function GET(req: Request, { params }: paramsType) {
-  const { id } = params
+  // 2. WICHTIG: Die id erst awaiten!
+  const { id } = await params;
 
   try {
-    const posts = await prisma.post.findFirst({
+    const post = await prisma.post.findUnique({
       where: { id },
-      include: {
-        user: {
-          select: {
-            id: true,
-            name: true
-          }
-        }
-      }
-    })
+      // ... dein restlicher Code (include etc.)
+    });
 
-    return NextResponse.json(posts)
+    if (!post) return new NextResponse("Post not found", { status: 404 });
 
+    return NextResponse.json(post);
   } catch (error) {
-    return new NextResponse("Something went wrong", { status: 500 })
+    return new NextResponse("Something went wrong", { status: 500 });
   }
 }
 
-export async function DELETE(req: Request, { params }: paramsType) {
-  const { id } = params
-
-  try {
-    await prisma.post.delete({
-      where: { id }
-    })
-    return NextResponse.json({ msg: "Post deleted successfully" })
-
-  } catch (error) {
-    return new NextResponse("Something went wrong", { status: 500 })
-  }
-}
+// Falls du hier auch PUT oder DELETE hast, dort ebenfalls { params }: paramsType
+// nutzen und const { id } = await params; einfügen!
